@@ -1,5 +1,6 @@
 import java.util.Scanner;
-import java.net.Socket;
+import java.io.DataOutputStream;
+import java.net.*;
 
 public class myftp {
 
@@ -12,39 +13,13 @@ public class myftp {
 
         try {
             Socket sock = new Socket(sysName,port);
+            DataOutputStream out = new DataOutputStream(sock.getOutputStream());
 
             while (true) {
                 System.out.print("mytftp>");
                 input = scan.nextLine();
                 input = input.trim().toLowerCase();
-                switch (input.substring(0, input.contains(" ") ? input.indexOf(" ") : input.length())) {
-                    case ("get"):
-                        System.out.println("get command recognized");
-                        break;
-                    case ("put"):
-                        System.out.println("put command recognized");
-                        break;
-                    case ("delete"):
-                        System.out.println("delete command recognized");
-                        break;
-                    case ("ls"):
-                        System.out.println("ls command recognized");
-                        break;
-                    case ("cd"):
-                        System.out.println("cd command recognized");
-                        break;
-                    case ("mkdir"):
-                        System.out.println("mkdir command recognized");
-                        break;
-                    case ("pwd"):
-                        System.out.println("pwd command recognized");
-                        break;
-                    case ("quit"):
-                        System.out.println("quit command recognized");
-                        break;
-                    default:
-                        System.out.println("Command not recognized.");
-                }
+                out.writeUTF(input);
             }
         } catch (Exception e) {
             System.out.println(e);
