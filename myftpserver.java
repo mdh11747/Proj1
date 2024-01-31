@@ -12,9 +12,12 @@ public class myftpserver {
             System.out.println("Client accepted");
             PrintWriter out = new PrintWriter(clientSock.getOutputStream(), true);
             DataInputStream in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
-            String inputLine, outputLine;
-            while (!((inputLine = in.readUTF()).equals("quit"))) {
-                switch (inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length())) {
+            String inputLine, outputLine, command;
+            command = "";
+            while (!(command.equals("quit"))) {
+                inputLine = in.readUTF();
+                command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
+                switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
                         break;
@@ -42,7 +45,6 @@ public class myftpserver {
                     default:
                         System.out.println("Command not recognized.");
                 }
-                System.out.println(inputLine);
             }
             serverSock.close();
             clientSock.close();
