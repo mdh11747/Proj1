@@ -32,7 +32,7 @@ public class myftp {
                 if (contains) {
                     out.writeUTF(input);
                     if (command.equals("put")) {
-                        clientFile = new File("./" + inputArg);
+                        clientFile = new File("./clientFiles/" + getFileFromArg(inputArg));
                         clientFileBytes = new byte[(int) clientFile.length()];
                         FileInputStream fis = new FileInputStream(clientFile);
                         fis.read(clientFileBytes);
@@ -44,6 +44,10 @@ public class myftp {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public static String getFileFromArg(String arg) {
+        return arg.substring(arg.indexOf("/") + 1);
     }
 
 }

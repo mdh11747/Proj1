@@ -17,7 +17,7 @@ public class myftpserver {
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
-                inputArg = inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
+                inputArg = getFileFromArg(inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
                 System.out.print("\n" + inputArg + "\n");
                 switch (command) {
                     case ("get"):
@@ -75,6 +75,10 @@ public class myftpserver {
         } catch (Exception e) {
             System.out.println("Exception was reached: " + e);
         }
+    }
+
+    public static String getFileFromArg(String arg) {
+        return arg.substring(arg.indexOf("/") + 1);
     }
 
 }
