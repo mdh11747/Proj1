@@ -32,11 +32,16 @@ public class myftp {
                 if (contains) {
                     out.writeUTF(input);
                     if (command.equals("put")) {
-                        clientFile = new File("./clientFiles/" + getFileFromArg(inputArg));
-                        clientFileBytes = new byte[(int) clientFile.length()];
-                        FileInputStream fis = new FileInputStream(clientFile);
-                        fis.read(clientFileBytes);
-                        out.write(clientFileBytes, 0, clientFileBytes.length);
+                        try {
+                            clientFile = new File("./clientFiles/" + getFileFromArg(inputArg));
+                            clientFileBytes = new byte[(int) clientFile.length()];
+                            FileInputStream fis = new FileInputStream(clientFile);
+                            fis.read(clientFileBytes);
+                            out.write(clientFileBytes, 0, clientFileBytes.length);
+                            System.out.println("File transferred to server successfully");
+                        } catch (Exception e) {
+                            System.out.println("There was an error transferring the file");
+                        }
                     } 
                 }
                 else {System.out.println("Command not recognized, try again");}
