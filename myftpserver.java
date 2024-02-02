@@ -14,7 +14,6 @@ public class myftpserver {
             DataInputStream in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
             String inputLine, inputArg, outputLine, command;
             command = "";
-            //System.out.println("Look here" + in.readUTF() + in.read() + command);
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
@@ -63,11 +62,9 @@ public class myftpserver {
     }
 
     public static void putFile(String fileName, DataInputStream in) {
-        System.out.println("put kinda works");
         byte[] bytes = new byte[10000];
         try {
             int fileLength = in.read(bytes);
-            System.out.println(fileLength);
             byte[] temp = new byte[fileLength];
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
@@ -78,8 +75,6 @@ public class myftpserver {
         } catch (Exception e) {
             System.out.println("Exception was reached: " + e);
         }
-
-        System.out.println(fileName);
     }
 
 }

@@ -28,18 +28,16 @@ public class myftp {
                 String inputArg = input.substring(input.contains(" ") ? input.indexOf(" ") + 1 : input.length());
                 boolean contains = Arrays.stream(commands).anyMatch(command::equals);
                 File clientFile;
+                byte[] clientFileBytes;
                 if (contains) {
+                    out.writeUTF(input);
                     if (command.equals("put")) {
                         clientFile = new File("./" + inputArg);
-                        byte[] clientFileBytes = new byte[(int) clientFile.length()];
-                        System.out.println(clientFileBytes.length);
-                        out.writeUTF(input);
+                        clientFileBytes = new byte[(int) clientFile.length()];
                         FileInputStream fis = new FileInputStream(clientFile);
                         fis.read(clientFileBytes);
                         out.write(clientFileBytes, 0, clientFileBytes.length);
-                    } else {
-                        out.writeUTF(input);
-                    }
+                    } 
                 }
                 else {System.out.println("Command not recognized, try again");}
             }
