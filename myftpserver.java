@@ -12,17 +12,22 @@ public class myftpserver {
             System.out.println("Client accepted");
             PrintWriter out = new PrintWriter(clientSock.getOutputStream(), true);
             DataInputStream in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
-            String inputLine, outputLine, command;
+            String inputLine, inputArg, outputLine, command;
             command = "";
+            //System.out.println("Look here" + in.readUTF() + in.read() + command);
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
+                inputArg = inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
+                System.out.print("\n" + inputArg + "\n");
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
+                        getFile(inputArg);
                         break;
                     case ("put"):
                         System.out.println("put command recognized");
+                        putFile(inputArg, in);
                         break;
                     case ("delete"):
                         System.out.println("delete command recognized");
@@ -51,6 +56,30 @@ public class myftpserver {
         } catch (IOException io) {
             System.out.println(io);
         }
+    }
+
+    public static void getFile(String fileName) {
+        System.out.println(fileName);
+    }
+
+    public static void putFile(String fileName, DataInputStream in) {
+        System.out.println("put kinda works");
+        byte[] bytes = new byte[10000];
+        try {
+            int fileLength = in.read(bytes);
+            System.out.println(fileLength);
+            byte[] temp = new byte[fileLength];
+            for (int i = 0; i < temp.length; i++) {
+                temp[i] = bytes[i];
+            }
+            FileOutputStream fos = new FileOutputStream("./serverFiles/" + fileName);
+            fos.write(temp);
+            fos.close();
+        } catch (Exception e) {
+            System.out.println("Exception was reached: " + e);
+        }
+
+        System.out.println(fileName);
     }
 
 }
