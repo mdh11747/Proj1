@@ -6,7 +6,6 @@ import java.io.*;
 import java.nio.file.Files;
 
 public class myftp {
-
     private static String input;
 
     public static void main(String[] args) {
@@ -17,6 +16,7 @@ public class myftp {
 
         try {
             Socket sock = new Socket(sysName,port);
+            DataInputStream in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             String command = "";
 
@@ -31,6 +31,23 @@ public class myftp {
                 byte[] clientFileBytes;
                 if (contains) {
                     out.writeUTF(input);
+                    if (command.equals("get")) {
+                        String fileName = in.readUTF();
+                        FileOutputStream fos = new FileOutputStream("./clientFiles/" + fileName);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos);
+                        byte[] bytes = new byte[10000];
+                        try {
+                            int fileLength = in.read(bytes);
+                            byte[] temp = new byte[fileLength];
+                            for (int i = 0; i < temp.length; i++) {
+                                temp[i] = bytes[i];
+                            }
+                            fos.write(temp);
+                            fos.close();
+                        } catch (Exception e) {
+                            System.out.println("Exception was reached: " + e);
+                        }
+                    }
                     if (command.equals("put")) {
                         try {
                             clientFile = new File("./" + inputArg);

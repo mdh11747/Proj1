@@ -16,9 +16,9 @@ public class myftpserver {
             command = "";
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
+                System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
                 inputArg = getFileFromArg(inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
-                System.out.print("\n" + inputArg + "\n");
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
@@ -65,6 +65,7 @@ public class myftpserver {
             byte[] serverFileBytes = new byte[(int) serverFile.length()];
             FileInputStream fis = new FileInputStream(serverFile);
             fis.read(serverFileBytes);
+            out.writeUTF(fileName);
             out.write(serverFileBytes, 0, serverFileBytes.length);
             System.out.println("Succesfully sent file to client");
         } catch (Exception e) {
