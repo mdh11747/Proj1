@@ -32,7 +32,12 @@ public class myftp {
                 if (contains) {
                     out.writeUTF(input);
                     if (command.equals("get")) {
-                        String fileName = in.readUTF();
+                        String message = in.readUTF();
+                        if (message.length() > 5 && message.substring(0, 5).equals("ERROR")) {
+                            System.out.println(message);
+                            continue;
+                        }
+                        String fileName = message;
                         fileName = getFileFromArg(fileName);
                         FileOutputStream fos = new FileOutputStream("./clientFiles/" + fileName);
                         BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -45,6 +50,7 @@ public class myftp {
                             }
                             fos.write(temp);
                             fos.close();
+                            System.out.println("SUCCESS: File:" + fileName + " was transferred from server to client successfully");
                         } catch (Exception e) {
                             System.out.println("Exception was reached: " + e);
                         }

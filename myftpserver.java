@@ -20,7 +20,7 @@ public class myftpserver {
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
                 inputArg = getFileFromArg(inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
                 String fileName = inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
-                System.out.println(fileName);
+                System.out.println(inputArg);
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
@@ -60,18 +60,22 @@ public class myftpserver {
     }
 
     public static void getFile(String fileName, Socket sock) {
-        System.out.println("hi" + fileName);
         try {
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-            File serverFile = new File("./" + fileName);
-            byte[] serverFileBytes = new byte[(int) serverFile.length()];
-            FileInputStream fis = new FileInputStream(serverFile);
-            fis.read(serverFileBytes);
-            out.writeUTF(fileName);
-            out.write(serverFileBytes, 0, serverFileBytes.length);
-            System.out.println("Succesfully sent file to client");
+            try {
+                File serverFile = new File("./" + fileName);
+                byte[] serverFileBytes = new byte[(int) serverFile.length()];
+                FileInputStream fis = new FileInputStream(serverFile);
+                fis.read(serverFileBytes);
+                out.writeUTF(fileName);
+                out.write(serverFileBytes, 0, serverFileBytes.length);
+                System.out.println("Succesfully sent file to client");
+            } catch (Exception e) {
+                out.writeUTF("ERROR: " + e);
+                System.out.println(e);
+            }
         } catch (Exception e) {
-            System.out.println("Error transferring file to client");
+            System.out.println("Exception");
         }
     }
 
