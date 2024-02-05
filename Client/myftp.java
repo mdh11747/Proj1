@@ -1,3 +1,4 @@
+package Client;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.io.DataOutputStream;
@@ -39,7 +40,7 @@ public class myftp {
                         }
                         String fileName = message;
                         fileName = getFileFromArg(fileName);
-                        FileOutputStream fos = new FileOutputStream("./clientFiles/" + fileName);
+                        FileOutputStream fos = new FileOutputStream("./Client/" + fileName);
                         BufferedOutputStream bos = new BufferedOutputStream(fos);
                         byte[] bytes = new byte[10000];
                         try {
@@ -57,7 +58,7 @@ public class myftp {
                     }
                     if (command.equals("put")) {
                         try {
-                            clientFile = new File("./" + inputArg);
+                            clientFile = new File("./Client/" + inputArg);
                             clientFileBytes = new byte[(int) clientFile.length()];
                             FileInputStream fis = new FileInputStream(clientFile);
                             fis.read(clientFileBytes);

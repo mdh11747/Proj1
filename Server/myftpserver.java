@@ -1,3 +1,4 @@
+package Server;
 import java.net.*;
 import java.io.*;
 
@@ -87,7 +88,7 @@ public class myftpserver {
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
             }
-            FileOutputStream fos = new FileOutputStream("./serverFiles/" + fileName);
+            FileOutputStream fos = new FileOutputStream("./Server/" + fileName);
             fos.write(temp);
             fos.close();
         } catch (Exception e) {
@@ -97,6 +98,14 @@ public class myftpserver {
 
     public static String getFileFromArg(String arg) {
         return arg.substring(arg.indexOf("/") + 1);
+    }
+
+    private static void cd(String directory) {
+        
+    }
+
+    private static void mkdir(String directory) {
+
     }
 
 }
