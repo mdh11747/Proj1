@@ -23,7 +23,7 @@ public class myftp {
             while (!command.equals("quit")) {
                 System.out.print("mytftp>");
                 input = scan.nextLine();
-                input = input.trim().toLowerCase();
+                input = input.trim();
                 command = input.substring(0,input.contains(" ") ? input.indexOf(" ") : input.length());
                 String inputArg = input.substring(input.contains(" ") ? input.indexOf(" ") + 1 : input.length());
                 boolean contains = Arrays.stream(commands).anyMatch(command::equals);
@@ -33,7 +33,7 @@ public class myftp {
                     out.writeUTF(input);
                     if (command.equals("put")) {
                         try {
-                            clientFile = new File("./clientFiles/" + getFileFromArg(inputArg));
+                            clientFile = new File("./" + inputArg);
                             clientFileBytes = new byte[(int) clientFile.length()];
                             FileInputStream fis = new FileInputStream(clientFile);
                             fis.read(clientFileBytes);

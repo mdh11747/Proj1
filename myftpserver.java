@@ -22,7 +22,7 @@ public class myftpserver {
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
-                        getFile(inputArg);
+                        getFile(inputArg, clientSock);
                         break;
                     case ("put"):
                         System.out.println("put command recognized");
@@ -57,8 +57,19 @@ public class myftpserver {
         }
     }
 
-    public static void getFile(String fileName) {
+    public static void getFile(String fileName, Socket sock) {
         System.out.println(fileName);
+        try {
+            DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+            File serverFile = new File("./serverFiles/" + fileName);
+            byte[] serverFileBytes = new byte[(int) serverFile.length()];
+            FileInputStream fis = new FileInputStream(serverFile);
+            fis.read(serverFileBytes);
+            out.write(serverFileBytes, 0, serverFileBytes.length);
+            System.out.println("Succesfully sent file to client");
+        } catch (Exception e) {
+            System.out.println("Error transferring file to client");
+        }
     }
 
     public static void putFile(String fileName, DataInputStream in) {
