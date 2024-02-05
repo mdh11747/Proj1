@@ -33,6 +33,7 @@ public class myftp {
                     out.writeUTF(input);
                     if (command.equals("get")) {
                         String fileName = in.readUTF();
+                        fileName = getFileFromArg(fileName);
                         FileOutputStream fos = new FileOutputStream("./clientFiles/" + fileName);
                         BufferedOutputStream bos = new BufferedOutputStream(fos);
                         byte[] bytes = new byte[10000];

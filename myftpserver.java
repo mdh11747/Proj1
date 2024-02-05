@@ -19,10 +19,12 @@ public class myftpserver {
                 System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
                 inputArg = getFileFromArg(inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
+                String fileName = inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
+                System.out.println(fileName);
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
-                        getFile(inputArg, clientSock);
+                        getFile(fileName, clientSock);
                         break;
                     case ("put"):
                         System.out.println("put command recognized");
@@ -58,10 +60,10 @@ public class myftpserver {
     }
 
     public static void getFile(String fileName, Socket sock) {
-        System.out.println(fileName);
+        System.out.println("hi" + fileName);
         try {
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-            File serverFile = new File("./serverFiles/" + fileName);
+            File serverFile = new File("./" + fileName);
             byte[] serverFileBytes = new byte[(int) serverFile.length()];
             FileInputStream fis = new FileInputStream(serverFile);
             fis.read(serverFileBytes);
