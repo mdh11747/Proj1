@@ -1,28 +1,36 @@
 package Server;
 
 import java.net.*;
+import java.util.Arrays;
 import java.io.*;
 
 public class myftpserver {
+
+    private static String pwd = "./Server/";
+    private static Socket clientSock;
+    private static PrintStream ps;
 
     public static void main(String[] args) {
         String port = args[0];
         try {
             ServerSocket serverSock = new ServerSocket(Integer.parseInt(port));
             System.out.println("Waiting for client...");
-            Socket clientSock = serverSock.accept();
+            clientSock = serverSock.accept();
             System.out.println("Client accepted");
-            PrintWriter out = new PrintWriter(clientSock.getOutputStream(), true);
+            ps = new PrintStream(clientSock.getOutputStream());
             DataInputStream in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
             DataOutputStream outputStream = new DataOutputStream(clientSock.getOutputStream());
-            String inputLine, inputArg, outputLine, command;
+            String inputLine, inputArg, directArg, command;
             command = "";
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
                 System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
+                System.out.println(command);
                 inputArg = getFileFromArg(
                         inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
+                directArg = inputLine
+                        .substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
                 String fileName = inputLine
                         .substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
                 System.out.println(inputArg);
@@ -57,12 +65,15 @@ public class myftpserver {
                         break;
                     case ("cd"):
                         System.out.println("cd command recognized");
+                        cd(inputArg);
                         break;
                     case ("mkdir"):
                         System.out.println("mkdir command recognized");
+                        mkdir(directArg);
                         break;
                     case ("pwd"):
                         System.out.println("pwd command recognized");
+                        pwd();
                         break;
                     case ("quit"):
                         System.out.println("quit command recognized");
@@ -82,7 +93,7 @@ public class myftpserver {
         try {
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             try {
-                File serverFile = new File("./" + fileName);
+                File serverFile = new File(getPwd() + fileName);
                 byte[] serverFileBytes = new byte[(int) serverFile.length()];
                 FileInputStream fis = new FileInputStream(serverFile);
                 fis.read(serverFileBytes);
@@ -106,7 +117,7 @@ public class myftpserver {
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
             }
-            FileOutputStream fos = new FileOutputStream("./Server/" + fileName);
+            FileOutputStream fos = new FileOutputStream(getPwd() + fileName);
             fos.write(temp);
             fos.close();
         } catch (Exception e) {
@@ -119,11 +130,57 @@ public class myftpserver {
     }
 
     private static void cd(String directory) {
-
+        try {
+            File file = new File(pwd + directory);
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+        if (directory.equals("~")) {
+            pwd = "./Server/";
+        } else if (directory.substring(0, 2).equals("..")) {
+            File file = new File(pwd);
+            if (!pwd.equals("./Server/")) {
+                pwd = file.getParent() + "/";
+            }
+        } else if (directory.substring(0, 1).equals(".")) {
+            pwd += directory.substring(2);
+        } else {
+            if (directory.substring(0, 1).equals("/")) {
+                directory = directory.substring(1);
+            }
+            pwd += directory;
+            if (!(pwd.charAt(pwd.length() - 1) == '/')) {
+                pwd += "/";
+            }
+        }
     }
 
     private static void mkdir(String directory) {
+        try {
+            String[] forbidden = { "/", "\\", ":", "!", "*", "\"", "<", ">", "?" };
+            if (Arrays.stream(forbidden).anyMatch(directory::contains)) {
+                System.out.println("Folder name not accepted");
+                ps.println("Folder name not accepted, please try again");
+            } else {
+                File folder = new File(pwd + directory);
+                System.out.println(pwd + directory);
+                folder.mkdirs();
+                byte[] serverFileBytes = new byte[(int) folder.length()];
+                clientSock.getOutputStream().write(serverFileBytes, 0, serverFileBytes.length);
+                ps.println(directory + " successfully created");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 
+    private static String getPwd() {
+        return pwd;
+    }
+
+    private static void pwd() {
+        System.out.println(pwd);
+        ps.println(pwd);
     }
 
     public static boolean deleteFile(String fileName) {
@@ -135,9 +192,10 @@ public class myftpserver {
                 System.out.println("Unable to delete the file");
                 return false;
             }
-        }else {
+        } else {
             System.out.println("File does not exist");
             return false;
         }
         return true;
+    }
 }
