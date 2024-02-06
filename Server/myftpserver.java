@@ -18,13 +18,15 @@ public class myftpserver {
             System.out.println("Client accepted");
             ps = new PrintStream(clientSock.getOutputStream()); 
             DataInputStream in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
-            String inputLine, inputArg, outputLine, command;
+            String inputLine, inputArg, directArg, command;
             command = "";
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
                 System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
+                System.out.println(command);
                 inputArg = getFileFromArg(inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
+                directArg = inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
                 String fileName = inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
                 System.out.println(inputArg);
                 switch (command) {
@@ -48,7 +50,7 @@ public class myftpserver {
                         break;
                     case ("mkdir"):
                         System.out.println("mkdir command recognized");
-                        mkdir(inputArg);
+                        mkdir(directArg);
                         break;
                     case ("pwd"):
                         System.out.println("pwd command recognized");
@@ -109,6 +111,11 @@ public class myftpserver {
     }
 
     private static void cd(String directory) {
+        try {
+            File file = new File(pwd + directory);
+        } catch (Exception e) {
+            System.out.print(e);
+        }
         if (directory.equals("~")) {
             pwd = "./Server/";
         } else if (directory.substring(0,2).equals("..")) {
