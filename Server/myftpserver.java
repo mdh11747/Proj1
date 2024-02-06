@@ -117,7 +117,7 @@ public class myftpserver {
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
             }
-            FileOutputStream fos = new FileOutputStream("../" + getPwd() + fileName);
+            FileOutputStream fos = new FileOutputStream(getPwd() + fileName);
             fos.write(temp);
             fos.close();
         } catch (Exception e) {
