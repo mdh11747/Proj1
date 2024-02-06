@@ -131,29 +131,43 @@ public class myftpserver {
     }
 
     private static void cd(String directory) {
+        if (directory.equals("")) {
+            pwd = "./";
+            ps.println("pwd is now " + pwd);
+        }
+        else if (directory.equals(".") || directory.equals("./")) {
+            ps.println("pwd is now " + pwd);
+        } else {
         try {
-            File file = new File(pwd + directory);
+            File check = new File(pwd + directory);
+            if (!check.exists() && !directory.equals("~")) {
+                ps.println("Directory does not exist, please try again");
+            } else {
+                if (directory.equals("~")) {
+                    pwd = "./";
+                } else if (directory.substring(0, 2).equals("..")) {
+                    File file = new File(pwd);
+                    if (!pwd.equals("./")) {
+                        pwd = file.getParent() + "/";
+                    }
+                } else if (directory.substring(0, 1).equals(".")) {
+                    pwd += directory.substring(2);
+                } else {
+                    if (directory.substring(0, 1).equals("/")) {
+                        directory = directory.substring(1);
+                    }
+                    pwd += directory;
+                    if (!(pwd.charAt(pwd.length() - 1) == '/')) {
+                        pwd += "/";
+                    }
+                }
+                ps.println("pwd is now " + pwd);
+            }
         } catch (Exception e) {
             System.out.print(e);
         }
-        if (directory.equals("~")) {
-            pwd = "./";
-        } else if (directory.substring(0, 2).equals("..")) {
-            File file = new File(pwd);
-            if (!pwd.equals("./")) {
-                pwd = file.getParent() + "/";
-            }
-        } else if (directory.substring(0, 1).equals(".")) {
-            pwd += directory.substring(2);
-        } else {
-            if (directory.substring(0, 1).equals("/")) {
-                directory = directory.substring(1);
-            }
-            pwd += directory;
-            if (!(pwd.charAt(pwd.length() - 1) == '/')) {
-                pwd += "/";
-            }
-        }
+    }
+        
     }
 
     private static void mkdir(String directory) {
@@ -164,11 +178,15 @@ public class myftpserver {
                 ps.println("Folder name not accepted, please try again");
             } else {
                 File folder = new File(pwd + directory);
+                if (folder.isDirectory()) {
+                    ps.println("Directory already exists, please try again");
+                } else {
                 System.out.println(pwd + directory);
                 folder.mkdirs();
                 byte[] serverFileBytes = new byte[(int) folder.length()];
                 clientSock.getOutputStream().write(serverFileBytes, 0, serverFileBytes.length);
                 ps.println(directory + " successfully created");
+                }
             }
         } catch (Exception e) {
             System.out.println(e);

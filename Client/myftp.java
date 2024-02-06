@@ -81,6 +81,10 @@ public class myftp {
                         case ("mkdir"):
                             System.out.println(br.readLine());
                             break;
+                        
+                        case ("cd"):
+                            System.out.println(br.readLine());
+                            break;
                     }
                     if (command.equals("delete")) {
                         try {
