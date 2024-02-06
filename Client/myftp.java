@@ -1,7 +1,6 @@
 package Client;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.io.DataOutputStream;
 import java.net.*;
 import java.io.*;
 import java.nio.file.Files;
@@ -20,6 +19,7 @@ public class myftp {
             DataInputStream in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             String command = "";
+            BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
             while (!command.equals("quit")) {
                 System.out.print("mytftp>");
@@ -32,7 +32,9 @@ public class myftp {
                 byte[] clientFileBytes;
                 if (contains) {
                     out.writeUTF(input);
-                    if (command.equals("get")) {
+                    switch(command) {
+
+                        case("get"):
                         String message = in.readUTF();
                         if (message.length() > 5 && message.substring(0, 5).equals("ERROR")) {
                             System.out.println(message);
@@ -55,8 +57,9 @@ public class myftp {
                         } catch (Exception e) {
                             System.out.println("Exception was reached: " + e);
                         }
-                    }
-                    if (command.equals("put")) {
+                        break;
+
+                    case("put"):
                         try {
                             clientFile = new File("./Client/" + inputArg);
                             clientFileBytes = new byte[(int) clientFile.length()];
@@ -67,9 +70,17 @@ public class myftp {
                         } catch (Exception e) {
                             System.out.println("There was an error transferring the file");
                         }
-                    } 
-                }
-                else {System.out.println("Command not recognized, try again");}
+                        break;
+
+                    case("pwd"):
+                        System.out.println(br.readLine());
+                        break;
+
+                    case("mkdir"):
+                        System.out.println(br.readLine());
+                        break;
+                    }
+                } else {System.out.println("Command not recognized, try again");}
             }
         } catch (Exception e) {
             System.out.println(e);
