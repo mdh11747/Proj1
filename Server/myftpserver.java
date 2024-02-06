@@ -94,7 +94,7 @@ public class myftpserver {
         try {
             //DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             try {
-                File serverFile = new File("../" + getPwd() + fileName);
+                File serverFile = new File(getPwd() + fileName);
                 byte[] serverFileBytes = new byte[(int) serverFile.length()];
                 FileInputStream fis = new FileInputStream(serverFile);
                 fis.read(serverFileBytes);
@@ -163,7 +163,7 @@ public class myftpserver {
                 System.out.println("Folder name not accepted");
                 ps.println("Folder name not accepted, please try again");
             } else {
-                File folder = new File("../" + pwd + directory);
+                File folder = new File(pwd + directory);
                 System.out.println(pwd + directory);
                 folder.mkdirs();
                 byte[] serverFileBytes = new byte[(int) folder.length()];
