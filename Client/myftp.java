@@ -95,6 +95,7 @@ public class myftp {
                         try {
                             out.writeUTF(input);
                             String fileList = in.readUTF();
+                            fileList = in.readUTF();
                             System.out.println(fileList);
                         } catch (Exception e) {
                             System.out.println("There was an error listing the files");
