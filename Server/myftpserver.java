@@ -6,7 +6,7 @@ import java.io.*;
 
 public class myftpserver {
 
-    private static String pwd = "./Server/";
+    private static String pwd = "./";
     private static Socket clientSock;
     private static PrintStream ps;
 
@@ -54,7 +54,7 @@ public class myftpserver {
                         break;
                     case ("ls"):
                         System.out.println("ls command recognized");
-                        File currDirectory = new File(".");
+                        File currDirectory = new File(getPwd());
                         File[] files = currDirectory.listFiles();
                         String rtn = "";
                         for (File file : files) {
@@ -137,10 +137,10 @@ public class myftpserver {
             System.out.print(e);
         }
         if (directory.equals("~")) {
-            pwd = "./Server/";
+            pwd = "./";
         } else if (directory.substring(0, 2).equals("..")) {
             File file = new File(pwd);
-            if (!pwd.equals("./Server/")) {
+            if (!pwd.equals("./")) {
                 pwd = file.getParent() + "/";
             }
         } else if (directory.substring(0, 1).equals(".")) {
@@ -185,7 +185,7 @@ public class myftpserver {
     }
 
     public static boolean deleteFile(String fileName) {
-        File fileToDelete = new File("./serverFiles/" + fileName);
+        File fileToDelete = new File(getPwd() + fileName);
         if (fileToDelete.exists()) {
             if (fileToDelete.delete()) {
                 System.out.println("File deleted successfully");
