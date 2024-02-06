@@ -1,3 +1,5 @@
+package Server;
+
 import java.net.*;
 import java.io.*;
 
@@ -12,19 +14,21 @@ public class myftpserver {
             System.out.println("Client accepted");
             PrintWriter out = new PrintWriter(clientSock.getOutputStream(), true);
             DataInputStream in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
-            DataOutputStream outputStream = new DataOutputStream(clientSock.getOutputStream());
             String inputLine, inputArg, outputLine, command;
             command = "";
             while (!(command.equals("quit"))) {
                 inputLine = in.readUTF();
+                System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
                 inputArg = getFileFromArg(
                         inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
-                System.out.print("\n" + inputArg + "\n");
+                String fileName = inputLine
+                        .substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
+                System.out.println(inputArg);
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
-                        getFile(inputArg);
+                        getFile(fileName, clientSock);
                         break;
                     case ("put"):
                         System.out.println("put command recognized");
@@ -32,23 +36,9 @@ public class myftpserver {
                         break;
                     case ("delete"):
                         System.out.println("delete command recognized");
-                        boolean worked = deleteFile(inputArg);
-                        if (worked == true) {
-                            outputStream.writeUTF("File successfully deleted");
-                        } else {
-                            outputStream.writeUTF("Error deleting file");
-                        }
                         break;
                     case ("ls"):
                         System.out.println("ls command recognized");
-                        File currDirectory = new File(".");
-                        File[] files = currDirectory.listFiles();
-                        String rtn = "";
-                        for (File file : files) {
-                            rtn += file.getName();
-                            rtn += "\n";
-                        }
-                        outputStream.writeUTF(rtn);
                         break;
                     case ("cd"):
                         System.out.println("cd command recognized");
@@ -73,8 +63,24 @@ public class myftpserver {
         }
     }
 
-    public static void getFile(String fileName) {
-        System.out.println(fileName);
+    public static void getFile(String fileName, Socket sock) {
+        try {
+            DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+            try {
+                File serverFile = new File("./" + fileName);
+                byte[] serverFileBytes = new byte[(int) serverFile.length()];
+                FileInputStream fis = new FileInputStream(serverFile);
+                fis.read(serverFileBytes);
+                out.writeUTF(fileName);
+                out.write(serverFileBytes, 0, serverFileBytes.length);
+                System.out.println("Succesfully sent file to client");
+            } catch (Exception e) {
+                out.writeUTF("ERROR: " + e);
+                System.out.println(e);
+            }
+        } catch (Exception e) {
+            System.out.println("Exception");
+        }
     }
 
     public static void putFile(String fileName, DataInputStream in) {
@@ -85,7 +91,7 @@ public class myftpserver {
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
             }
-            FileOutputStream fos = new FileOutputStream("./serverFiles/" + fileName);
+            FileOutputStream fos = new FileOutputStream("./Server/" + fileName);
             fos.write(temp);
             fos.close();
         } catch (Exception e) {
@@ -97,19 +103,12 @@ public class myftpserver {
         return arg.substring(arg.indexOf("/") + 1);
     }
 
-    public static boolean deleteFile(String fileName) {
-        File fileToDelete = new File("./serverFiles/" + fileName);
-        if (fileToDelete.exists()) {
-            if (fileToDelete.delete()) {
-                System.out.println("File deleted successfully");
-            } else {
-                System.out.println("Unable to delete the file");
-                return false;
-            }
-        } else {
-            System.out.println("File does not exist");
-            return false;
-        }
-        return true;
+    private static void cd(String directory) {
+
     }
+
+    private static void mkdir(String directory) {
+
+    }
+
 }

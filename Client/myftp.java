@@ -1,11 +1,13 @@
+package Client;
+
 import java.util.Arrays;
 import java.util.Scanner;
+import java.io.DataOutputStream;
 import java.net.*;
 import java.io.*;
 import java.nio.file.Files;
 
 public class myftp {
-
     private static String input;
 
     public static void main(String[] args) {
@@ -16,14 +18,14 @@ public class myftp {
 
         try {
             Socket sock = new Socket(sysName, port);
+            DataInputStream in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
-            DataInputStream in = new DataInputStream(sock.getInputStream());
             String command = "";
 
             while (!command.equals("quit")) {
                 System.out.print("mytftp>");
                 input = scan.nextLine();
-                input = input.trim().toLowerCase();
+                input = input.trim();
                 command = input.substring(0, input.contains(" ") ? input.indexOf(" ") : input.length());
                 String inputArg = input.substring(input.contains(" ") ? input.indexOf(" ") + 1 : input.length());
                 boolean contains = Arrays.stream(commands).anyMatch(command::equals);
@@ -31,9 +33,34 @@ public class myftp {
                 byte[] clientFileBytes;
                 if (contains) {
                     out.writeUTF(input);
+                    if (command.equals("get")) {
+                        String message = in.readUTF();
+                        if (message.length() > 5 && message.substring(0, 5).equals("ERROR")) {
+                            System.out.println(message);
+                            continue;
+                        }
+                        String fileName = message;
+                        fileName = getFileFromArg(fileName);
+                        FileOutputStream fos = new FileOutputStream("./Client/" + fileName);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos);
+                        byte[] bytes = new byte[10000];
+                        try {
+                            int fileLength = in.read(bytes);
+                            byte[] temp = new byte[fileLength];
+                            for (int i = 0; i < temp.length; i++) {
+                                temp[i] = bytes[i];
+                            }
+                            fos.write(temp);
+                            fos.close();
+                            System.out.println("SUCCESS: File:" + fileName
+                                    + " was transferred from server to client successfully");
+                        } catch (Exception e) {
+                            System.out.println("Exception was reached: " + e);
+                        }
+                    }
                     if (command.equals("put")) {
                         try {
-                            clientFile = new File("./clientFiles/" + getFileFromArg(inputArg));
+                            clientFile = new File("./Client/" + inputArg);
                             clientFileBytes = new byte[(int) clientFile.length()];
                             FileInputStream fis = new FileInputStream(clientFile);
                             fis.read(clientFileBytes);
@@ -43,25 +70,6 @@ public class myftp {
                             System.out.println("There was an error transferring the file");
                         }
                     }
-                    if (command.equals("delete")) {
-                        try {
-                            out.writeUTF(inputArg);
-                            System.out.println("The delete command transferred to server successfully");
-                            System.out.println(in.readUTF());
-                        } catch (Exception e) {
-                            System.out.println("There was an error deleting the file");
-                        }
-                    }
-                    if (command.equals("ls")) {
-                        try {
-                            out.writeUTF(input);
-                            String fileList = in.readUTF();
-                            System.out.println(fileList);
-                        } catch (Exception e) {
-                            System.out.println("There was an error listing the files");
-                        }
-                    }
-
                 } else {
                     System.out.println("Command not recognized, try again");
                 }
@@ -74,4 +82,5 @@ public class myftp {
     public static String getFileFromArg(String arg) {
         return arg.substring(arg.indexOf("/") + 1);
     }
+
 }
