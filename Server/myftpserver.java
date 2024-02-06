@@ -37,11 +37,11 @@ public class myftpserver {
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
-                        getFile(fileName, clientSock);
+                        getFile(fileName, clientSock, outputStream);
                         break;
                     case ("put"):
                         System.out.println("put command recognized");
-                        putFile(inputArg, in);
+                        putFile(inputArg, in, outputStream);
                         break;
                     case ("delete"):
                         System.out.println("delete command recognized");
@@ -59,8 +59,9 @@ public class myftpserver {
                         String rtn = "";
                         for (File file : files) {
                             rtn += file.getName();
-                            rtn += "\n";
+                            rtn += " ";
                         }
+                        System.out.println(rtn);
                         outputStream.writeUTF(rtn);
                         break;
                     case ("cd"):
@@ -89,9 +90,9 @@ public class myftpserver {
         }
     }
 
-    public static void getFile(String fileName, Socket sock) {
+    public static void getFile(String fileName, Socket sock, DataOutputStream out) {
         try {
-            DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+            //DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             try {
                 File serverFile = new File("../" + getPwd() + fileName);
                 byte[] serverFileBytes = new byte[(int) serverFile.length()];
@@ -109,7 +110,7 @@ public class myftpserver {
         }
     }
 
-    public static void putFile(String fileName, DataInputStream in) {
+    public static void putFile(String fileName, DataInputStream in, DataOutputStream out) {
         byte[] bytes = new byte[10000];
         try {
             int fileLength = in.read(bytes);
@@ -162,7 +163,7 @@ public class myftpserver {
                 System.out.println("Folder name not accepted");
                 ps.println("Folder name not accepted, please try again");
             } else {
-                File folder = new File(pwd + directory);
+                File folder = new File("../" + pwd + directory);
                 System.out.println(pwd + directory);
                 folder.mkdirs();
                 byte[] serverFileBytes = new byte[(int) folder.length()];
