@@ -1,4 +1,5 @@
 package Client;
+
 import java.util.Arrays;
 import java.util.Scanner;
 import java.net.*;
@@ -12,10 +13,10 @@ public class myftp {
         Scanner scan = new Scanner(System.in);
         String sysName = args[0];
         int port = Integer.parseInt(args[1]);
-        String[] commands = {"get","put","delete","ls","cd","mkdir","pwd","quit"};
+        String[] commands = { "get", "put", "delete", "ls", "cd", "mkdir", "pwd", "quit" };
 
         try {
-            Socket sock = new Socket(sysName,port);
+            Socket sock = new Socket(sysName, port);
             DataInputStream in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             String command = "";
@@ -25,7 +26,7 @@ public class myftp {
                 System.out.print("mytftp>");
                 input = scan.nextLine();
                 input = input.trim();
-                command = input.substring(0,input.contains(" ") ? input.indexOf(" ") : input.length());
+                command = input.substring(0, input.contains(" ") ? input.indexOf(" ") : input.length());
                 String inputArg = input.substring(input.contains(" ") ? input.indexOf(" ") + 1 : input.length());
                 boolean contains = Arrays.stream(commands).anyMatch(command::equals);
                 File clientFile;
@@ -53,7 +54,8 @@ public class myftp {
                             }
                             fos.write(temp);
                             fos.close();
-                            System.out.println("SUCCESS: File:" + fileName + " was transferred from server to client successfully");
+                            System.out.println("SUCCESS: File:" + fileName
+                                    + " was transferred from server to client successfully");
                         } catch (Exception e) {
                             System.out.println("Exception was reached: " + e);
                         }
