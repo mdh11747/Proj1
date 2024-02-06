@@ -93,7 +93,7 @@ public class myftpserver {
         try {
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             try {
-                File serverFile = new File(getPwd() + fileName);
+                File serverFile = new File("../" + getPwd() + fileName);
                 byte[] serverFileBytes = new byte[(int) serverFile.length()];
                 FileInputStream fis = new FileInputStream(serverFile);
                 fis.read(serverFileBytes);
