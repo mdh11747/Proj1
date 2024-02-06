@@ -93,7 +93,7 @@ public class myftpserver {
         try {
             DataOutputStream out = new DataOutputStream(sock.getOutputStream());
             try {
-                File serverFile = new File(getPwd() + fileName);
+                File serverFile = new File("../" + getPwd() + fileName);
                 byte[] serverFileBytes = new byte[(int) serverFile.length()];
                 FileInputStream fis = new FileInputStream(serverFile);
                 fis.read(serverFileBytes);
@@ -117,7 +117,7 @@ public class myftpserver {
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
             }
-            FileOutputStream fos = new FileOutputStream(getPwd() + fileName);
+            FileOutputStream fos = new FileOutputStream("../" + getPwd() + fileName);
             fos.write(temp);
             fos.close();
         } catch (Exception e) {
