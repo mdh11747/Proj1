@@ -2,7 +2,6 @@ package Client;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import java.io.DataOutputStream;
 import java.net.*;
 import java.io.*;
 import java.nio.file.Files;
@@ -68,6 +67,24 @@ public class myftp {
                             System.out.println("File transferred to server successfully");
                         } catch (Exception e) {
                             System.out.println("There was an error transferring the file");
+                        }
+                    }
+                    if (command.equals("delete")) {
+                        try {
+                            out.writeUTF(inputArg);
+                            System.out.println("The delete command transferred to server successfully");
+                            System.out.println(in.readUTF());
+                        } catch (Exception e) {
+                            System.out.println("There was an error deleting the file");
+                        }
+                    }
+                    if (command.equals("ls")) {
+                        try {
+                            out.writeUTF(input);
+                            String fileList = in.readUTF();
+                            System.out.println(fileList);
+                        } catch (Exception e) {
+                            System.out.println("There was an error listing the files");
                         }
                     }
                 } else {
