@@ -24,16 +24,13 @@ public class myftpserver {
             command = "";
             while (true) {
                 inputLine = in.readUTF();
-                System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
-                System.out.println(command);
                 inputArg = getFileFromArg(
                         inputLine.substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length()));
                 directArg = inputLine
                         .substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
                 String fileName = inputLine
                         .substring(inputLine.contains(" ") ? inputLine.indexOf(" ") + 1 : inputLine.length());
-                System.out.println(inputArg);
                 switch (command) {
                     case ("get"):
                         System.out.println("get command recognized");
@@ -61,7 +58,6 @@ public class myftpserver {
                             rtn += file.getName();
                             rtn += " ";
                         }
-                        System.out.println(rtn);
                         outputStream.writeUTF(rtn);
                         break;
                     case ("cd"):
@@ -114,7 +110,7 @@ public class myftpserver {
                 System.out.println(e);
             }
         } catch (Exception e) {
-            System.out.println("Exception");
+            System.out.println("Exception was reached");
         }
     }
 
@@ -122,7 +118,6 @@ public class myftpserver {
         byte[] bytes = new byte[10000];
         try {
             int fileLength = in.read(bytes);
-            System.out.println(fileLength);
             if (fileLength == 3) {} else {
             byte[] temp = new byte[fileLength];
             for (int i = 0; i < temp.length; i++) {
@@ -151,11 +146,14 @@ public class myftpserver {
         } else {
         try {
             File check = new File(pwd + directory);
-            if (!check.exists() && !directory.equals("~") || directory.length() <= 2) {
+            if (!check.exists() && !directory.equals("~")) {
                 ps.println("Directory does not exist, please try again");
             } else {
                 if (directory.equals("~")) {
+                    System.out.println(directory.length());
                     pwd = "./";
+                } else if (directory.length() == 1) {
+                    pwd = pwd + directory + "/";
                 } else if (directory.substring(0, 2).equals("..")) {
                     File file = new File(pwd);
                     if (!pwd.equals("./")) {
@@ -183,16 +181,14 @@ public class myftpserver {
 
     private static void mkdir(String directory) {
         try {
-            String[] forbidden = { "/", "\\", ":", "!", "*", "\"", "<", ">", "?", "." };
-            if (Arrays.stream(forbidden).anyMatch(directory::contains) || directory.length() <= 2) {
-                System.out.println("Folder name not accepted");
+            String[] forbidden = { "/", "\\", ":", "!", "*", "\"", "<", ">", "?", "."};
+            if (Arrays.stream(forbidden).anyMatch(directory::contains)) {
                 ps.println("Folder name not accepted, please try again");
             } else {
                 File folder = new File(pwd + directory);
                 if (folder.isDirectory()) {
                     ps.println("Directory already exists, please try again");
                 } else {
-                System.out.println(pwd + directory);
                 folder.mkdirs();
                 byte[] serverFileBytes = new byte[(int) folder.length()];
                 clientSock.getOutputStream().write(serverFileBytes, 0, serverFileBytes.length);

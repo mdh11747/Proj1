@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.net.*;
 import java.io.*;
-import java.nio.file.Files;
 
 public class myftp {
     private static String input;
