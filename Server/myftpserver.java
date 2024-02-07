@@ -114,6 +114,8 @@ public class myftpserver {
         byte[] bytes = new byte[10000];
         try {
             int fileLength = in.read(bytes);
+            System.out.println(fileLength);
+            if (fileLength == 3) {} else {
             byte[] temp = new byte[fileLength];
             for (int i = 0; i < temp.length; i++) {
                 temp[i] = bytes[i];
@@ -121,6 +123,7 @@ public class myftpserver {
             FileOutputStream fos = new FileOutputStream(getPwd() + fileName);
             fos.write(temp);
             fos.close();
+        }
         } catch (Exception e) {
             System.out.println("Exception was reached: " + e);
         }

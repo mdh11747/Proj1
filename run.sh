@@ -16,4 +16,4 @@ CLIENT_DIR=$(dirname "$CLIENT_FILE")
 
 # Running Server and Client in separate Terminal windows
 osascript -e "tell app \"Terminal\" to do script \"cd '$SERVER_DIR'; java -cp '$PROJECT_DIR' Server.myftpserver 1980\""
-osascript -e "tell app \"Terminal\" to do script \"cd '$CLIENT_DIR'; java -cp '$PROJECT_DIR' Client.myftp 172.20.161.96 1980\""
+osascript -e "tell app \"Terminal\" to do script \"cd '$CLIENT_DIR'; java -cp '$PROJECT_DIR' Client.myftp 10.11.15.66 1980\""
