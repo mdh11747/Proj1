@@ -143,7 +143,7 @@ public class myftpserver {
         } else {
         try {
             File check = new File(pwd + directory);
-            if (!check.exists() && !directory.equals("~") || directory.length() <= 1) {
+            if (!check.exists() && !directory.equals("~") || directory.length() <= 2) {
                 ps.println("Directory does not exist, please try again");
             } else {
                 if (directory.equals("~")) {
@@ -176,7 +176,7 @@ public class myftpserver {
     private static void mkdir(String directory) {
         try {
             String[] forbidden = { "/", "\\", ":", "!", "*", "\"", "<", ">", "?", "." };
-            if (Arrays.stream(forbidden).anyMatch(directory::contains) || directory.length() <= 1) {
+            if (Arrays.stream(forbidden).anyMatch(directory::contains) || directory.length() <= 2) {
                 System.out.println("Folder name not accepted");
                 ps.println("Folder name not accepted, please try again");
             } else {
