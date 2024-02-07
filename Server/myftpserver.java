@@ -22,7 +22,7 @@ public class myftpserver {
             DataOutputStream outputStream = new DataOutputStream(clientSock.getOutputStream());
             String inputLine, inputArg, directArg, command;
             command = "";
-            while (!(command.equals("quit"))) {
+            while (true) {
                 inputLine = in.readUTF();
                 System.out.println(inputLine);
                 command = inputLine.substring(0, inputLine.contains(" ") ? inputLine.indexOf(" ") : inputLine.length());
@@ -78,13 +78,12 @@ public class myftpserver {
                         break;
                     case ("quit"):
                         System.out.println("quit command recognized");
+                        clientSock.close();
                         break;
                     default:
                         System.out.println("Command not recognized.");
                 }
             }
-            serverSock.close();
-            clientSock.close();
         } catch (IOException io) {
             System.out.println(io);
         }
