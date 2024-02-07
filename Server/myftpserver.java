@@ -79,9 +79,15 @@ public class myftpserver {
                     case ("quit"):
                         System.out.println("quit command recognized");
                         clientSock.close();
+                        serverSock.close();
+                        serverSock = new ServerSocket(Integer.parseInt(port));
                         System.out.println("Waiting for client...");
                         clientSock = serverSock.accept();
                         System.out.println("Client accepted");
+                        ps = new PrintStream(clientSock.getOutputStream());
+                        in = new DataInputStream(new BufferedInputStream(clientSock.getInputStream()));
+                        outputStream = new DataOutputStream(clientSock.getOutputStream());
+                        command = "";
                         break;
                     default:
                         System.out.println("Command not recognized.");
